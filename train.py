@@ -9,7 +9,7 @@ FLAGS = tf.app.flags.FLAGS
 tf.flags.DEFINE_string("db_fname", "./data/patches_32x32_2k.h5", "Path to database file used for training")
 tf.flags.DEFINE_string("output_basedir", "./outputs/", "Directory for saving and loading model checkpoints")
 tf.flags.DEFINE_string("pretrained_fname", "", "Name of the pretrained model checkpoints (to resume from)")
-tf.flags.DEFINE_integer("n_epochs", 50, "Number of training epochs.")
+tf.flags.DEFINE_integer("n_epochs", 5000, "Number of training epochs.")
 tf.flags.DEFINE_integer("log_every_n_steps", 50,
                         "Frequency at which loss and global step are logged.")
 tf.flags.DEFINE_integer("save_every_n_epochs", 10,

@@ -21,7 +21,7 @@ class TrainConfig(object):
     weight_decay = 1e-3         # weight for l2 regularization
 
 def arr_to_string(arr):
-    for i in xrange(len(arr)):
+    for i in range(len(arr)):
         arr[i] = str(arr[i])
     return ','.join(arr)
 

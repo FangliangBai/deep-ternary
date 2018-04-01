@@ -3,7 +3,7 @@ from tensorflow.python import debug as tf_debug
 import tensorflow.contrib.slim as slim
 import tensorflow.contrib.losses as L
 import numpy as np
-
+from visualize_tensor import *
 
 class Autoencoder():
     def __init__(self, x_dim, cfg, log_dir=None):
@@ -22,6 +22,11 @@ class Autoencoder():
 
         self.y, self.sen_w, self.sen_wsb, self.w_scale = self.build_sparse_binary_sensing_matrix(self.x, self.x_dim,
                                                                                                  self.y_dim, 'sensing')
+        tf.summary.histogram("binary_kernels", self.sen_wsb)
+        tf.summary.histogram("kernels", self.sen_w)
+        print(self.sen_wsb)
+        print(self.sen_w)
+
         self.hidden = self.build_nonlinear_decoder(self.y, self.hidden_sizes, weight_decay=self.weight_decay,
                                                    scope='decoder')
         self.x_hat = self.build_reconstructor(self.hidden, self.x_dim, weight_decay=self.weight_decay,
@@ -103,7 +108,7 @@ class Autoencoder():
                                 biases_initializer=tf.constant_initializer(0),
                                 activation_fn=self.transfer,
                                 weights_regularizer=slim.l2_regularizer(weight_decay)):
-                for i in xrange(len(hidden_sizes)):
+                for i in range(len(hidden_sizes)):
                     hidden = slim.fully_connected(hidden, hidden_sizes[i], scope='fc%d' % i)
                     if self.use_bn:
                         hidden = self.bn_layer(hidden, scope='bn%d' % i)
@@ -149,7 +154,7 @@ class Autoencoder():
         spars_level = int(self.x_dim * self.weight_spars_rate)
         mask = self.calc_spars_mask(w, spars_level)
         # binarize the sparse weights
-        sen_w_sparse_binary = tf.multiply(tf.sign(w), mask)
+        sen_w_sparse_binary = tf.multiply(tf.nn.relu(tf.sign(w)), mask)
         opt = tf.assign(wsb, sen_w_sparse_binary, validate_shape=True)
         return opt
 
@@ -237,12 +242,12 @@ class Autoencoder():
 
     def string_to_array(self, str, dtype='int'):
         arr = str.strip().split(',')
-        for i in xrange(len(arr)):
+        for i in range(len(arr)):
             if dtype == 'int':
                 arr[i] = int(arr[i])
             elif dtype == 'float':
                 arr[i] = float(arr[i])
         return arr
-        # -----------------------------------------------------------------------------------------
-        # END Util functions
-        # -----------------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------
+    # END Util functions
+    # -----------------------------------------------------------------------------------------
